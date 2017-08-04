@@ -1,8 +1,6 @@
 package in.omerjerk.rtmp.muxer.io;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
+import in.omerjerk.rtmp.muxer.util.Log;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -40,12 +38,12 @@ public final class RtmpWriter
     /**
      * Output stream to send data to the server
      */
-    @NonNull
+    
     private final TimeoutSocket socket;
     /**
      * Is the writer currently writing
      */
-    @NonNull
+    
     private final AtomicBoolean running = new AtomicBoolean(false);
     /**
      * Timeout for write operations (in ms)
@@ -58,7 +56,7 @@ public final class RtmpWriter
 
 // ---------------------------------------->
 
-    public RtmpWriter(@NonNull TimeoutSocket socket, int writeTimeout, int ackWaitTimeout)
+    public RtmpWriter(TimeoutSocket socket, int writeTimeout, int ackWaitTimeout)
     {
         this.socket = socket;
         this.writeTimeout = writeTimeout;
@@ -137,8 +135,8 @@ public final class RtmpWriter
      * @param forceSend shall we bypass the ACK waiting
      * @throws IOException if connection fail or if ACK is needed and timeout
      */
-    @WorkerThread
-    public void send(@NonNull final byte[] data, boolean forceSend) throws IOException
+    
+    public void send(final byte[] data, boolean forceSend) throws IOException
     {
         waitForAckIfNeeded(forceSend);
 
@@ -155,8 +153,8 @@ public final class RtmpWriter
      * @param data the data to send
      * @throws IOException if connection fail or if ACK is needed and timeout
      */
-    @WorkerThread
-    public void send(@NonNull byte[] data) throws IOException
+    
+    public void send(byte[] data) throws IOException
     {
         send(data, false);
     }
@@ -169,8 +167,8 @@ public final class RtmpWriter
      * @param forceSend shall we bypass the ACK waiting
      * @throws IOException if connection fail or if ACK is needed and timeout
      */
-    @WorkerThread
-    public void send(@NonNull ByteBuffer buffer, boolean forceSend) throws IOException
+    
+    public void send(ByteBuffer buffer, boolean forceSend) throws IOException
     {
         waitForAckIfNeeded(forceSend);
 
@@ -187,8 +185,8 @@ public final class RtmpWriter
      * @param buffer buffer containing the data to send
      * @throws IOException if connection fail or if ACK is needed and timeout
      */
-    @WorkerThread
-    public void send(@NonNull ByteBuffer buffer) throws IOException
+    
+    public void send(ByteBuffer buffer) throws IOException
     {
         send(buffer, false);
     }
@@ -199,7 +197,7 @@ public final class RtmpWriter
      * @param forceSend shall we wait of not
      * @throws IOException if timeout is reach
      */
-    @WorkerThread
+    
     private void waitForAckIfNeeded(boolean forceSend) throws IOException
     {
         if( !forceSend )
@@ -231,8 +229,8 @@ public final class RtmpWriter
      * @param data the data to send
      * @throws IOException on error or on timeout
      */
-    @WorkerThread
-    private void sendWithTimeout(@NonNull final byte[] data) throws IOException
+    
+    private void sendWithTimeout(final byte[] data) throws IOException
     {
         if( !running.compareAndSet(false, true) )
         {
@@ -266,8 +264,8 @@ public final class RtmpWriter
      * @param data the data to send
      * @throws IOException on error or on timeout
      */
-    @WorkerThread
-    private void sendWithTimeout(@NonNull final ByteBuffer data) throws IOException
+    
+    private void sendWithTimeout(final ByteBuffer data) throws IOException
     {
         if( !running.compareAndSet(false, true) )
         {

@@ -1,8 +1,5 @@
 package in.omerjerk.rtmp.muxer.io;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -23,38 +20,37 @@ public final class TimeoutSocket extends Socket implements Runnable
     /**
      * Lock used for reading data
      */
-    @NonNull
+    
     private final Lock lock = new ReentrantLock();
     /**
      * Lock used for writing data
      */
-    @NonNull
+    
     private final Lock lock2 = new ReentrantLock();
     /**
      * Condition for data input
      */
-    @NonNull
+    
     private final Condition input = lock.newCondition();
     /**
      * Condition for data output (writing)
      */
-    @NonNull
+    
     private final Condition output = lock2.newCondition();
     /**
      * Thread used to send data
      */
-    @NonNull
+    
     private final Thread thread = new Thread(this);
     /**
      * Is the socket ready to write data
      */
-    @NonNull
+    
     private final AtomicBoolean ready = new AtomicBoolean(true);
 
     /**
      * Data to write
      */
-    @Nullable
     private byte[] data = null;
     /**
      * Offset to read data
@@ -67,7 +63,6 @@ public final class TimeoutSocket extends Socket implements Runnable
     /**
      * Last exception we got
      */
-    @Nullable
     private IOException lastError;
 
 // ----------------------------------->
@@ -89,7 +84,7 @@ public final class TimeoutSocket extends Socket implements Runnable
      * @throws InterruptedException
      * @throws IOException
      */
-    public void write(@NonNull byte[] b, long timeout, @NonNull TimeUnit unit) throws InterruptedException, IOException
+    public void write( byte[] b, long timeout,  TimeUnit unit) throws InterruptedException, IOException
     {
         write(b, 0, b.length, timeout, unit);
     }
@@ -105,7 +100,7 @@ public final class TimeoutSocket extends Socket implements Runnable
      * @throws InterruptedException
      * @throws IOException
      */
-    public void write(@NonNull byte[] b, int offset, int limit, long timeout, @NonNull TimeUnit unit) throws InterruptedException, IOException
+    public void write( byte[] b, int offset, int limit, long timeout,  TimeUnit unit) throws InterruptedException, IOException
     {
         final long t = System.nanoTime();
         long time = timeout;
