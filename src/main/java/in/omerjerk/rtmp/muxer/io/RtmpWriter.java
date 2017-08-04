@@ -1,4 +1,4 @@
-package com.octiplex.android.rtmp.io;
+package in.omerjerk.rtmp.muxer.io;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;

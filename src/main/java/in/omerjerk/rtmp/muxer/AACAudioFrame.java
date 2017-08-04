@@ -1,9 +1,6 @@
 package in.omerjerk.rtmp.muxer;
 
-import android.support.annotation.NonNull;
-
 /**
- * Interface that defines an AAC audio frame, extracted from {@link android.media.MediaRecorder}.
  *
  * @author Benoit LETONDOR
  */
@@ -22,6 +19,5 @@ public interface AACAudioFrame
      *
      * @return data of the stream
      */
-    @NonNull
     byte[] getData();
 }

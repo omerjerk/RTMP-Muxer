@@ -1,4 +1,4 @@
-package com.octiplex.android.rtmp.io;
+package in.omerjerk.rtmp.muxer.io;
 
 import java.io.IOException;
 

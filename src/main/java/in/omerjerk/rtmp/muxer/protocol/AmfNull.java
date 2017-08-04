@@ -1,4 +1,4 @@
-package com.octiplex.android.rtmp.protocol;
+package in.omerjerk.rtmp.muxer.protocol;
 
 /**
  * Object that represents an AMF0 null value parameter

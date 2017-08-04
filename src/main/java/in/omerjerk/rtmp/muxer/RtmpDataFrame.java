@@ -1,7 +1,5 @@
 package in.omerjerk.rtmp.muxer;
 
-import android.support.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +60,6 @@ public final class RtmpDataFrame
      *
      * @return a map containing values for setDataFrame call
      */
-    @NonNull
     public Map<String, Object> serialize()
     {
         final Map<String, Object> map = new HashMap<>(6);

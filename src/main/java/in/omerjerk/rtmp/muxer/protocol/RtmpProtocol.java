@@ -1,6 +1,4 @@
-package com.octiplex.android.rtmp.protocol;
-
-import android.support.annotation.NonNull;
+package in.omerjerk.rtmp.muxer.protocol;
 
 /**
  * RTMP in.omerjerk.rtmp.muxer.protocol implementation.

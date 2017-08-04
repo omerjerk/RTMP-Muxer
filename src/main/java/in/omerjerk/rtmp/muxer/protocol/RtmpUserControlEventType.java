@@ -1,8 +1,4 @@
-package com.octiplex.android.rtmp.protocol;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
+package in.omerjerk.rtmp.muxer.protocol;
 
 /**
  * Enumerate the different kinds of event type a User control message can contain.

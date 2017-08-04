@@ -1,15 +1,7 @@
-package com.octiplex.android.rtmp.io;
+package in.omerjerk.rtmp.muxer.io;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
-
-import com.octiplex.android.rtmp.protocol.Amf0Functions;
-import com.octiplex.android.rtmp.protocol.Amf0Value;
-import com.octiplex.android.rtmp.protocol.AmfNull;
-import com.octiplex.android.rtmp.protocol.RtmpMessageType;
-import com.octiplex.android.rtmp.protocol.RtmpPeerBandwidthLimitType;
-import com.octiplex.android.rtmp.protocol.RtmpUserControlEventType;
+import in.omerjerk.rtmp.muxer.protocol.*;
+import in.omerjerk.rtmp.muxer.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -26,7 +18,6 @@ import java.util.concurrent.RejectedExecutionException;
  */
 public final class RtmpReader implements Runnable
 {
-    @NonNull
     private final static String TAG = "RtmpReader";
 
     /**
@@ -40,17 +31,17 @@ public final class RtmpReader implements Runnable
     /**
      * Stream used by the server to send data to the client
      */
-    @NonNull
+    
     private final BufferedInputStream in;
     /**
      * Listener of this parser
      */
-    @NonNull
+    
     private final RtmpReaderListener listener;
     /**
      * Executor that checks for new data from server every once in a while
      */
-    @NonNull
+    
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     /**
      * Timeout for handshake read operations (in ms)
@@ -66,7 +57,7 @@ public final class RtmpReader implements Runnable
      * @param handshakeTimeout timeout for handshake read operations (in ms)
      * @param listener listener
      */
-    public RtmpReader(@NonNull InputStream in, int handshakeTimeout, @NonNull RtmpReaderListener listener)
+    public RtmpReader(InputStream in, int handshakeTimeout, RtmpReaderListener listener)
     {
         this.in = new BufferedInputStream(in);
         this.listener = listener;
@@ -224,7 +215,7 @@ public final class RtmpReader implements Runnable
      * @return the RTMP version used by the server
      * @throws IOException
      */
-    @WorkerThread
+    
     public byte readHandshakeS0() throws IOException
     {
         dataRead += 1;
@@ -239,8 +230,8 @@ public final class RtmpReader implements Runnable
      * @return bytes of the S1 handshake
      * @throws IOException if the server is too slow sending S1 or on network error
      */
-    @WorkerThread
-    @NonNull
+    
+    
     public byte[] readHandshakeS1() throws IOException
     {
         /*
@@ -288,8 +279,8 @@ public final class RtmpReader implements Runnable
      * @return bytes of the S2 handshake
      * @throws IOException if the server is too slow sending S2 or on network error
      */
-    @WorkerThread
-    @NonNull
+    
+    
     public byte[] readHandshakeS2() throws IOException
     {
         /*
@@ -339,7 +330,7 @@ public final class RtmpReader implements Runnable
      * @param buffer body of the message
      * @throws IOException
      */
-    private void parseMessage(@NonNull RtmpMessageType type, @NonNull byte[] buffer) throws IOException
+    private void parseMessage(RtmpMessageType type, byte[] buffer) throws IOException
     {
         switch ( type )
         {
@@ -386,7 +377,7 @@ public final class RtmpReader implements Runnable
      * @param buffer bytes of data sent by the server containing an AMF0 function
      * @throws IOException
      */
-    private void parseAmf0Function(@NonNull byte[] buffer) throws IOException
+    private void parseAmf0Function(byte[] buffer) throws IOException
     {
         Amf0Value<String> functionName = Amf0Functions.readString(0, buffer);
 
@@ -414,7 +405,7 @@ public final class RtmpReader implements Runnable
      * @param buffer bytes of data sent by the server containing the onStatus function
      * @throws IOException
      */
-    private void parseOnStatusFunction(int offset, @NonNull byte[] buffer) throws IOException
+    private void parseOnStatusFunction(int offset, byte[] buffer) throws IOException
     {
         /*
          * +--------------+----------+----------------------------------------+
@@ -479,7 +470,7 @@ public final class RtmpReader implements Runnable
      * @param buffer bytes of data sent by the server containing the result function
      * @throws IOException if result is != ok
      */
-    private void parseResultFunction(int offset, @NonNull byte[] buffer) throws IOException
+    private void parseResultFunction(int offset, byte[] buffer) throws IOException
     {
         // Transaction Id
         Amf0Value<Double> transactionId = Amf0Functions.readNumber(offset, buffer);
@@ -506,7 +497,7 @@ public final class RtmpReader implements Runnable
      * @param buffer bytes of data sent by the server containing the result function
      * @throws IOException if result is != ok
      */
-    private void parseOnConnectResult(int offset, @NonNull byte[] buffer) throws IOException
+    private void parseOnConnectResult(int offset, byte[] buffer) throws IOException
     {
         /*
          * +--------------+----------+----------------------------------------+
@@ -564,7 +555,7 @@ public final class RtmpReader implements Runnable
      * @param buffer bytes of data sent by the server containing the result function
      * @throws IOException if result is != ok
      */
-    private void parseOnCreateStreamResult(int offset, @NonNull byte[] buffer) throws IOException
+    private void parseOnCreateStreamResult(int offset, byte[] buffer) throws IOException
     {
         /*
          * +--------------+----------+----------------------------------------+
@@ -606,7 +597,7 @@ public final class RtmpReader implements Runnable
      * @param buffer buffer containing the parse peer bandwidth data sent by the server
      * @throws IOException
      */
-    private void parsePeerBandwidth(@NonNull byte[] buffer) throws IOException
+    private void parsePeerBandwidth(byte[] buffer) throws IOException
     {
         /*
          *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -634,7 +625,7 @@ public final class RtmpReader implements Runnable
      * @param buffer buffer containing the window ack size data sent by the server
      * @throws IOException
      */
-    private void parseWindowAckSize(@NonNull byte[] buffer) throws IOException
+    private void parseWindowAckSize(byte[] buffer) throws IOException
     {
         /*
          *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -653,7 +644,7 @@ public final class RtmpReader implements Runnable
      * @param buffer buffer containing the set chunk size command data sent by the server
      * @throws IOException
      */
-    private void parseSetChunkSizeMessage(@NonNull byte[] buffer) throws IOException
+    private void parseSetChunkSizeMessage(byte[] buffer) throws IOException
     {
         /*
          *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -671,7 +662,7 @@ public final class RtmpReader implements Runnable
      * @param buffer buffer containing the ACK command data sent by the server
      * @throws IOException
      */
-    private void parseAck(@NonNull byte[] buffer) throws IOException
+    private void parseAck(byte[] buffer) throws IOException
     {
         /*
          *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -688,7 +679,7 @@ public final class RtmpReader implements Runnable
      * @param buffer buffer containing the user control message and its data
      * @throws IOException
      */
-    private void parseUserControlMessage(@NonNull byte[] buffer) throws IOException
+    private void parseUserControlMessage(byte[] buffer) throws IOException
     {
         /*
          * +------------------------------+-------------------------
@@ -729,7 +720,7 @@ public final class RtmpReader implements Runnable
      * @throws IOException on error or if size is not 2, 3 or 4
      */
     // FIXME this really needs to be less lame!!
-    public static long readNumber(int size, int offset, @NonNull byte[] data) throws IOException
+    public static long readNumber(int size, int offset, byte[] data) throws IOException
     {
         if( size == 2 )
         {
@@ -760,7 +751,7 @@ public final class RtmpReader implements Runnable
          * @param size ack size
          * @param type type of limit
          */
-        void onSetPeerBandwidth(long size, @NonNull RtmpPeerBandwidthLimitType type);
+        void onSetPeerBandwidth(long size, RtmpPeerBandwidthLimitType type);
 
         /**
          * Called when the server send an ACK
@@ -812,6 +803,6 @@ public final class RtmpReader implements Runnable
          *
          * @param e the error
          */
-        void onReaderError(@NonNull IOException e);
+        void onReaderError(IOException e);
     }
 }

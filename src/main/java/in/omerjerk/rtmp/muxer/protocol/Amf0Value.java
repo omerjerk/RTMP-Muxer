@@ -1,6 +1,4 @@
-package com.octiplex.android.rtmp.protocol;
-
-import android.support.annotation.NonNull;
+package in.omerjerk.rtmp.muxer.protocol;
 
 /**
  * Object that wrap Amf0 value with the size of that value in the buffer

@@ -1,8 +1,5 @@
-package com.octiplex.android.rtmp.protocol;
+package in.omerjerk.rtmp.muxer.protocol;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 /**
  * Type of peer bandwidth limit.

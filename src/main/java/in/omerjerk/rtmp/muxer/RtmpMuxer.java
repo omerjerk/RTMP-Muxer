@@ -1,20 +1,11 @@
 package in.omerjerk.rtmp.muxer;
 
-import android.os.Looper;
-import android.os.NetworkOnMainThreadException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
-
-import com.octiplex.android.rtmp.io.TimeoutSocket;
-import com.octiplex.android.rtmp.protocol.Amf0Functions;
-import com.octiplex.android.rtmp.protocol.RtmpMessageType;
-import com.octiplex.android.rtmp.protocol.RtmpPeerBandwidthLimitType;
-import com.octiplex.android.rtmp.protocol.RtmpProtocol;
-import com.octiplex.android.rtmp.io.RtmpReader;
-import com.octiplex.android.rtmp.io.RtmpWriter;
-import com.octiplex.android.rtmp.protocol.RtmpUserControlEventType;
+import com.sun.istack.internal.Nullable;
+import in.omerjerk.rtmp.muxer.io.RtmpReader;
+import in.omerjerk.rtmp.muxer.io.RtmpWriter;
+import in.omerjerk.rtmp.muxer.io.TimeoutSocket;
+import in.omerjerk.rtmp.muxer.protocol.*;
+import in.omerjerk.rtmp.muxer.util.Log;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -36,8 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *     <li>7. Stop streaming using {@link #deleteStream()}</li>
  *     <li>7. Close connection using {@link #stop()}</li>
  * </ul>
- * <b>Warning: </b>Most methods of this class need to be called from a worker thread. It will throw
- * a {@link NetworkOnMainThreadException} if called from the UI thread.
+ * <b>Warning: </b>Most methods of this class need to be called from a worker thread.
  *
  * @author Benoit LETONDOR
  */
@@ -87,7 +77,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     /**
      * AAC header
      */
-    @Nullable
     private AACAudioHeader audioHeader;
     /**
      * Last audio frame sent timestamp. -1 == nothing has been sent yet
@@ -106,7 +95,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     /**
      * Host of the server
      */
-    @NonNull
     private final String host;
     /**
      * Port used to connect to the server
@@ -153,7 +141,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     /**
      * Boolean that store if an ACK should be sent before the next data
      */
-    @NonNull
     private final AtomicBoolean shouldSendACK = new AtomicBoolean(false);
     /**
      * Bytes we read, to send to the server (should be read if {@link #shouldSendACK} is true)
@@ -209,7 +196,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     /**
      * Time used by the muxer
      */
-    @NonNull
     private final Time time;
 
 // ---------------------------------------->
@@ -221,7 +207,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param port port to connect the the RTMP server
      * @param time an implementation of time that will be used for timestamping
      */
-    public RtmpMuxer(@NonNull String host, int port, @NonNull Time time)
+    public RtmpMuxer(String host, int port, Time time)
     {
         this.host = host;
         this.port = port;
@@ -235,7 +221,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @throws IOException
      */
-    @WorkerThread
     private void handshake() throws IOException
     {
         long timestamp = System.currentTimeMillis();
@@ -330,7 +315,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @throws IOException
      */
-    @WorkerThread
     private void setChunkSize() throws IOException
     {
         ByteBuffer buffer = ByteBuffer.allocate(16); // 16 = 12 for type 0 header and 4 for data
@@ -352,7 +336,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param bytesReceived the number of bytes we received
      * @throws IOException
      */
-    @WorkerThread
     private void sendAck(long bytesReceived) throws IOException
     {
         ByteBuffer buffer = ByteBuffer.allocate(16); // 16 = 12 for type 0 header and 4 for data
@@ -374,7 +357,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param timestamp timestamp sent by the server on the ping request
      * @throws IOException
      */
-    @WorkerThread
     private void sendPingResponse(long timestamp) throws IOException
     {
         ByteBuffer buffer = ByteBuffer.allocate(18); // 18 = 12 for type 0 header and 6 for data
@@ -399,7 +381,6 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param windowAckSize number of bytes we can send before expecting an ACK
      * @throws IOException
      */
-    @WorkerThread
     private void sendWindowAckSize(long windowAckSize) throws IOException
     {
         ByteBuffer buffer = ByteBuffer.allocate(16); // 16 = 12 for type 0 header + 4 for data
@@ -415,8 +396,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         writer.send(buffer.array());
     }
 
-    @WorkerThread
-    private void connect(@NonNull String app, @Nullable String serverUrl, @Nullable String pageUrl) throws IOException
+    private void connect(String app, @Nullable String serverUrl, @Nullable String pageUrl) throws IOException
     {
         byte[] connectFunction = Amf0Functions.connect(app, serverUrl, pageUrl);
 
@@ -458,8 +438,8 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param headerData containing header data.
      * @throws IOException
      */
-    @WorkerThread
-    private void sendHeader(@NonNull byte[] headerData) throws IOException
+    
+    private void sendHeader(byte[] headerData) throws IOException
     {
                 /*
          * Extract pps & sps values
@@ -563,8 +543,8 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param data H264 video frame data
      * @throws IOException
      */
-    @WorkerThread
-    private synchronized void sendVideoData(@NonNull H264VideoFrame data) throws IOException
+    
+    private synchronized void sendVideoData(H264VideoFrame data) throws IOException
     {
         if ( data.isHeader() )
         {
@@ -604,7 +584,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         }
         else
         {
-            Log.w(TAG, "Using a non cached buffer for first video chunk");
+            Log.d(TAG, "Using a non cached buffer for first video chunk");
             buffer = ByteBuffer.allocate(bufferLength);
         }
 
@@ -662,7 +642,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
             }
             else
             {
-                Log.w(TAG, "Using a non cached buffer for video sub chunk");
+                Log.d(TAG, "Using a non cached buffer for video sub chunk");
                 chunkBuffer = ByteBuffer.allocate(chunkBufferLength);
             }
 
@@ -683,7 +663,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @throws IOException on error
      */
-    @WorkerThread
+    
     private void sendAckIfNeeded() throws IOException
     {
         if ( shouldSendACK.compareAndSet(true, false) )
@@ -697,7 +677,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @throws IOException on error
      */
-    @WorkerThread
+    
     private void sendPingResponseIfNeeded() throws IOException
     {
         if( shouldSendPingResponse.compareAndSet(true, false) )
@@ -715,7 +695,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @throws IOException if an error occurs during the data sending.
      */
-    @WorkerThread
+    
     private void sendAudioHeader() throws IOException
     {
         Log.d(TAG, "Starting audio");
@@ -765,8 +745,8 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param frame the frame
      * @throws IOException if an error occurs while sending data
      */
-    @WorkerThread
-    private void sendAudioFrame(@NonNull AACAudioFrame frame) throws IOException
+    
+    private void sendAudioFrame(AACAudioFrame frame) throws IOException
     {
         if ( audioHeader != null && !audioHeaderSent)
         {
@@ -805,7 +785,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
             }
             else
             {
-                Log.w(TAG, "Using a non cached buffer for audio chunk");
+                Log.d(TAG, "Using a non cached buffer for audio chunk");
                 buffer = ByteBuffer.allocate(bufferLength);
             }
 
@@ -838,7 +818,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
                 }
                 else
                 {
-                    Log.w(TAG, "Using a non cached buffer for sub audio chunk");
+                    Log.d(TAG, "Using a non cached buffer for sub audio chunk");
                     chunkBuffer = ByteBuffer.allocate(chunkBufferLength);
                 }
 
@@ -855,7 +835,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         }
         else
         {
-            Log.w(TAG, "Skip audio frame");
+            Log.d(TAG, "Skip audio frame");
         }
     }
 
@@ -872,14 +852,13 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param app the RTMP application name to send data to
      * @param pageUrl optional RTMP page url
      * @param serverUrl optional RTMP server url
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if you call this method while the muxer is already started. Use
      *                               {@link #isStarted()} if you're not sure.
      */
-    @WorkerThread
-    public void start(@NonNull RtmpConnectionListener listener, @NonNull String app, @Nullable String serverUrl, @Nullable String pageUrl) throws NetworkOnMainThreadException, IllegalStateException
+    
+    public void start(RtmpConnectionListener listener, String app, @Nullable String serverUrl, @Nullable String pageUrl) throws IllegalStateException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( socket != null )
         {
@@ -1011,13 +990,12 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param data an {@link H264VideoFrame} data
      * @throws IOException on error sending data to the server. Note that the muxer will be automatically
      *                     be stopped if this exception is thrown.
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if called when {@link RtmpConnectionListener#onReadyToPublish()} hasn't been called yet.
      */
-    @WorkerThread
-    public void postVideo(@NonNull H264VideoFrame data) throws IOException, NetworkOnMainThreadException, IllegalStateException
+    
+    public void postVideo(H264VideoFrame data) throws IOException, IllegalStateException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( !streaming)
         {
@@ -1041,7 +1019,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @param audioHeader the audio header
      */
-    public void setAudioHeader(@NonNull AACAudioHeader audioHeader)
+    public void setAudioHeader(AACAudioHeader audioHeader)
     {
         this.audioHeader = audioHeader;
     }
@@ -1053,13 +1031,12 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * @param frame the audio frame
      * @throws IOException on error sending data to the server. Note that the muxer will be automatically
      *                     be stopped if this exception is thrown.
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if called when {@link RtmpConnectionListener#onReadyToPublish()} hasn't been called yet.
      */
-    @WorkerThread
-    public void postAudio(@NonNull AACAudioFrame frame) throws IOException, IllegalStateException, NetworkOnMainThreadException
+    
+    public void postAudio(AACAudioFrame frame) throws IOException, IllegalStateException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( !streaming)
         {
@@ -1082,12 +1059,11 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @param value the meta to send to the server
      * @throws IOException on error sending data to the server.
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if called when {@link RtmpConnectionListener#onReadyToPublish()} hasn't been called yet.
      */
-    public void sendMetaData(@NonNull String value) throws IOException, NetworkOnMainThreadException, IllegalStateException
+    public void sendMetaData(String value) throws IOException, IllegalStateException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( !streaming)
         {
@@ -1109,12 +1085,11 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @param frame the data to send to the server
      * @throws IOException on error sending data to the server.
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if called when {@link RtmpConnectionListener#onReadyToPublish()} hasn't been called yet.
      */
-    public void sendDataFrame(@NonNull RtmpDataFrame frame) throws IOException, NetworkOnMainThreadException, IllegalStateException
+    public void sendDataFrame(RtmpDataFrame frame) throws IOException, IllegalStateException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( !streaming)
         {
@@ -1137,12 +1112,11 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *
      * @param playpath name of the stream
      * @throws IOException on error sending data to the server.
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if called when {@link RtmpConnectionListener#onConnected()} hasn't been called yet.
      */
-    public void createStream(@NonNull String playpath) throws IOException, NetworkOnMainThreadException, IllegalSelectorException
+    public void createStream(String playpath) throws IOException, IllegalSelectorException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( !connected )
         {
@@ -1168,12 +1142,11 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      * Send the delete stream command to the server.
      *
      * @throws IOException on error sending data to the server.
-     * @throws NetworkOnMainThreadException if called from the main thread
      * @throws IllegalStateException if called when {@link RtmpConnectionListener#onReadyToPublish()} hasn't been called yet.
      */
-    public void deleteStream() throws IOException, NetworkOnMainThreadException, IllegalStateException
+    public void deleteStream() throws IOException, IllegalStateException
     {
-        ensureWorkerThread();
+//        ensureWorkerThread();
 
         if( !streaming)
         {
@@ -1223,7 +1196,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
 
         if( socket == null )
         {
-            Log.w(TAG, "Stop called while already stopped, do nothing");
+            Log.d(TAG, "Stop called while already stopped, do nothing");
         }
 
         doStop();
@@ -1276,23 +1249,10 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         playpath = null;
     }
 
-    /**
-     * Ensure that the method is called from a worker thread.
-     *
-     * @throws NetworkOnMainThreadException if called from the main thread
-     */
-    private static void ensureWorkerThread()
-    {
-        if( Looper.myLooper() == Looper.getMainLooper() )
-        {
-            throw new NetworkOnMainThreadException();
-        }
-    }
-
     //region RtmpReaderListener impl
 
     @Override
-    public void onSetPeerBandwidth(long size, @NonNull RtmpPeerBandwidthLimitType type)
+    public void onSetPeerBandwidth(long size, RtmpPeerBandwidthLimitType type)
     {
         Log.d(TAG, "onSetPeerBandwidth: "+size+". Type: "+type);
 
@@ -1343,7 +1303,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
             }
             catch (IOException e)
             {
-                Log.e(TAG, "Error while sending ACK window size after setPeerBandwidth received", e);
+                Log.e(TAG, "Error while sending ACK window size after setPeerBandwidth received" + e.getMessage());
             }
         }
     }
@@ -1377,7 +1337,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
             }
             catch (Exception e)
             {
-                Log.e(TAG, "Error while sending auto ping response", e);
+                Log.e(TAG, "Error while sending auto ping response" + e.getMessage());
             }
         }
         else // In case we are getting ping while streaming, response will be sent before next frame
@@ -1401,7 +1361,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         else
         {
             // FIXME how to manage concurrency ?
-            Log.w(TAG, "Received onSetChunkSize but videoChunkBuffer is already initialized, so keep the size as-is");
+            Log.d(TAG, "Received onSetChunkSize but videoChunkBuffer is already initialized, so keep the size as-is");
         }
 
         if( audioChunkBuffer == null )
@@ -1411,7 +1371,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         else
         {
             // FIXME how to manage concurrency ?
-            Log.w(TAG, "Received onSetChunkSize but audioChunkBuffer is already initialized, so keep the size as-is");
+            Log.d(TAG, "Received onSetChunkSize but audioChunkBuffer is already initialized, so keep the size as-is");
         }
     }
 
@@ -1452,9 +1412,9 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     }
 
     @Override
-    public void onReaderError(@NonNull IOException e)
+    public void onReaderError(IOException e)
     {
-        Log.d(TAG, "onReaderError", e);
+        Log.d(TAG, "onReaderError" + e.getMessage());
 
         RtmpConnectionListener listener = this.listener;
         doStop();
