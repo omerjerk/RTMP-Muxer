@@ -1,5 +1,7 @@
 package in.omerjerk.rtmp.muxer.protocol;
 
+import in.omerjerk.rtmp.muxer.util.Log;
+
 /**
  * Enumerate the different kinds of event type a User control message can contain.
  *
@@ -44,7 +46,7 @@ public enum RtmpUserControlEventType
 
 // ---------------------------------------->
 
-    @NonNull
+    
     private final static String TAG = "UserControlEventType";
 
     private final int value;
@@ -65,7 +67,7 @@ public enum RtmpUserControlEventType
      * @param value the value
      * @return the enum object, or null
      */
-    @Nullable
+    
     public static RtmpUserControlEventType fromValue(int value)
     {
         for(RtmpUserControlEventType type : values())
@@ -76,7 +78,7 @@ public enum RtmpUserControlEventType
             }
         }
 
-        Log.w(TAG, "Unable to find RtmpUserControlEventType for value: " + value);
+        Log.d(TAG, "Unable to find RtmpUserControlEventType for value: " + value);
 
         return null;
     }

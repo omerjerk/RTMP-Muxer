@@ -39,8 +39,8 @@ public final class RtmpProtocol
      * @param streamId stream id
      * @return a buffer containing the header (12 bytes long)
      */
-    @NonNull
-    public static byte[] generateType0Header(int chunkStreamId, long timestamp, long messageLength, @NonNull RtmpMessageType messageType, long streamId)
+    
+    public static byte[] generateType0Header(int chunkStreamId, long timestamp, long messageLength,  RtmpMessageType messageType, long streamId)
     {
         byte[] buffer = new byte[12];
 
@@ -99,8 +99,8 @@ public final class RtmpProtocol
      * @param messageType type of the message
      * @return a buffer containing the header (8 bytes long)
      */
-    @NonNull
-    public static byte[] generateType1Header(int chunkStreamId, long timestampDelta, long messageLength, @NonNull RtmpMessageType messageType)
+    
+    public static byte[] generateType1Header(int chunkStreamId, long timestampDelta, long messageLength,  RtmpMessageType messageType)
     {
         byte[] buffer = new byte[8];
 
@@ -147,7 +147,7 @@ public final class RtmpProtocol
      * @param timestampDelta timestamp delta since last message
      * @return a buffer containing the header (4 bytes long)
      */
-    @NonNull
+    
     public static byte[] generateType2Header(long timestampDelta, int chunkStreamId)
     {
         byte[] buffer = new byte[4];
@@ -178,7 +178,7 @@ public final class RtmpProtocol
      * @param chunkStreamId chunk stream ID
      * @return a buffer containing the header (4 bytes long)
      */
-    @NonNull
+    
     public static byte[] generateType3Header(int chunkStreamId)
     {
         byte[] buffer = new byte[1];
@@ -197,7 +197,7 @@ public final class RtmpProtocol
      * @param fmt type of header to use
      * @param chunkStreamId chunk stream id
      */
-    private static void addBasicHeader(@NonNull byte[] buffer, int fmt, int chunkStreamId)
+    private static void addBasicHeader( byte[] buffer, int fmt, int chunkStreamId)
     {
         if( chunkStreamId < 2 || chunkStreamId > 63 ) //TODO handle larger values
         {

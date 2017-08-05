@@ -1,7 +1,5 @@
 package in.omerjerk.rtmp.muxer;
 
-import android.support.annotation.NonNull;
-
 import java.io.IOException;
 
 /**
@@ -32,5 +30,5 @@ public interface RtmpConnectionListener
      *
      * @param e the error
      */
-    void onConnectionError(@NonNull IOException e);
+    void onConnectionError(IOException e);
 }

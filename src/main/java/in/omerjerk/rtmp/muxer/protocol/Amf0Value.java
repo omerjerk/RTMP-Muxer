@@ -11,7 +11,6 @@ public final class Amf0Value<T>
     /**
      * The actual value
      */
-    @NonNull
     public final T value;
     /**
      * Length of the value in the buffer
@@ -26,7 +25,7 @@ public final class Amf0Value<T>
      * @param value the actual value
      * @param length the length of this value in the buffer
      */
-    Amf0Value(@NonNull T value, int length)
+    Amf0Value(T value, int length)
     {
         this.value = value;
         this.length = length;

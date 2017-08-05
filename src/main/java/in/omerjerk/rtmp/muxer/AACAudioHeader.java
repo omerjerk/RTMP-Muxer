@@ -1,9 +1,7 @@
 package in.omerjerk.rtmp.muxer;
 
-import android.support.annotation.NonNull;
-
 /**
- * Interface that defines an AAC header, extracted from {@link android.media.MediaRecorder}.
+ * Interface that defines an AAC header, extracted from {android.media.MediaRecorder}.
  *
  * @author Benoit LETONDOR
  */
@@ -14,7 +12,6 @@ public interface AACAudioHeader
      *
      * @return bytes of data
      */
-    @NonNull
     byte[] getData();
 
     /**

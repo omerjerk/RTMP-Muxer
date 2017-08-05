@@ -1,6 +1,8 @@
 package in.omerjerk.rtmp.muxer.protocol;
 
 
+import in.omerjerk.rtmp.muxer.util.Log;
+
 /**
  * Type of peer bandwidth limit.
  *
@@ -36,7 +38,7 @@ public enum RtmpPeerBandwidthLimitType
 
 // ------------------------------------------>
 
-    @NonNull
+    
     private final static String TAG = "PeerBandwidthLimitType";
 
     /**
@@ -45,7 +47,7 @@ public enum RtmpPeerBandwidthLimitType
      * @param value the value
      * @return the enum object, or null
      */
-    @Nullable
+    
     public static RtmpPeerBandwidthLimitType fromValue(int value)
     {
         for(RtmpPeerBandwidthLimitType type : values())
@@ -56,7 +58,7 @@ public enum RtmpPeerBandwidthLimitType
             }
         }
 
-        Log.w(TAG, "Unable to find PeerBandwidthLimitType for value: " + value);
+        Log.d(TAG, "Unable to find PeerBandwidthLimitType for value: " + value);
 
         return null;
     }

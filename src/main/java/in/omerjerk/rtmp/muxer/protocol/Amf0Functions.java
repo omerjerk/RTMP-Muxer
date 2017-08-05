@@ -1,12 +1,8 @@
 package in.omerjerk.rtmp.muxer.protocol;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.util.ArrayMap;
-import android.util.Log;
 
-import com.octiplex.android.rtmp.io.RtmpReader;
+import in.omerjerk.rtmp.muxer.io.RtmpReader;
+import in.omerjerk.rtmp.muxer.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,28 +19,28 @@ import java.util.Map;
  */
 public final class Amf0Functions
 {
-    @NonNull
+    
     private static final String TAG = "Amf0Functions";
 
     /**
      * Publish function
      */
-    @NonNull
+    
     private static final String PUBLISH = "publish";
     /**
      * Connect function
      */
-    @NonNull
+    
     private static final String CONNECT = "connect";
     /**
      * Create stream function
      */
-    @NonNull
+    
     private static final String CREATE_STREAM = "createStream";
     /**
      * Delete stream function
      */
-    @NonNull
+    
     private static final String DELETE_STREAM = "deleteStream";
     /**
      * Transaction ID used to send a create stream command
@@ -53,17 +49,17 @@ public final class Amf0Functions
     /**
      * On status function
      */
-    @NonNull
+    
     public static final String ON_STATUS = "onStatus";
     /**
      * Result function
      */
-    @NonNull
+    
     public static final String RESULT = "_result";
     /**
      * Error function
      */
-    @NonNull
+    
     public static final String ERROR = "_error";
 
 // ------------------------------------------>
@@ -82,8 +78,8 @@ public final class Amf0Functions
      * @return bytes of the function
      * @throws IOException on error
      */
-    @NonNull
-    public static byte[] publish(@NonNull String streamName) throws IOException
+    
+    public static byte[] publish( String streamName) throws IOException
     {
         /*
          * +--------------+----------+----------------------------------------+
@@ -129,7 +125,7 @@ public final class Amf0Functions
      * @return bytes of the function
      * @throws IOException on error
      */
-    @NonNull
+    
     public static byte[] createStream() throws IOException
     {
         /*
@@ -176,7 +172,7 @@ public final class Amf0Functions
      * @return bytes of the function
      * @throws IOException on error
      */
-    @NonNull
+    
     public static byte[] deleteStream(int streamId) throws IOException
     {
         /*
@@ -227,8 +223,8 @@ public final class Amf0Functions
      * @return bytes of the function
      * @throws IOException on error
      */
-    @NonNull
-    public static byte[] connect(@NonNull String app, @Nullable String serverUrl, @Nullable String pageUrl) throws IOException
+    
+    public static byte[] connect( String app,  String serverUrl,  String pageUrl) throws IOException
     {
         /*
          * +----------------+---------+---------------------------------------+
@@ -252,7 +248,7 @@ public final class Amf0Functions
             addNumberParam(os, 1);
 
             // Add the app param
-            Map<String,Object> params = new ArrayMap<>();
+            Map<String,Object> params = new HashMap<>();
             params.put("app", app);
 
             if( serverUrl != null )
@@ -282,8 +278,8 @@ public final class Amf0Functions
      * @return serialized bytes
      * @throws IOException
      */
-    @NonNull
-    public static byte[] textMeta(@NonNull String value) throws IOException
+    
+    public static byte[] textMeta( String value) throws IOException
     {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try
@@ -310,7 +306,7 @@ public final class Amf0Functions
      * @return serialized bytes
      * @throws IOException
      */
-    @NonNull
+    
     public static byte[] dataFrameMeta(Map<String, Object> values) throws IOException
     {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -339,8 +335,7 @@ public final class Amf0Functions
      * @param value string value to put
      * @throws IOException on error
      */
-    @VisibleForTesting
-    protected static void addStringParam(@NonNull ByteArrayOutputStream os, @NonNull String value) throws IOException
+    protected static void addStringParam( ByteArrayOutputStream os,  String value) throws IOException
     {
         byte[] bytes = value.getBytes();
 
@@ -364,8 +359,7 @@ public final class Amf0Functions
      * @param value value to put
      * @throws IOException on error
      */
-    @VisibleForTesting
-    protected static void addNumberParam(@NonNull ByteArrayOutputStream os, Number value) throws IOException
+    protected static void addNumberParam( ByteArrayOutputStream os, Number value) throws IOException
     {
         // Param type
         os.write(ParamType.NUMBER.value);
@@ -383,8 +377,8 @@ public final class Amf0Functions
      * @param value boolean value to put
      * @throws IOException on error
      */
-    @VisibleForTesting
-    protected static void addBooleanParam(@NonNull ByteArrayOutputStream os, boolean value) throws IOException
+    
+    protected static void addBooleanParam( ByteArrayOutputStream os, boolean value) throws IOException
     {
         // Param type
         os.write(ParamType.BOOLEAN.value);
@@ -399,8 +393,8 @@ public final class Amf0Functions
      * @param os output stream to write into
      * @throws IOException on error
      */
-    @VisibleForTesting
-    protected static void addNullParam(@NonNull ByteArrayOutputStream os) throws IOException
+    
+    protected static void addNullParam( ByteArrayOutputStream os) throws IOException
     {
         os.write(ParamType.NULL.value);
     }
@@ -412,8 +406,7 @@ public final class Amf0Functions
      * @param object object to putc
      * @throws IOException on error
      */
-    @VisibleForTesting
-    protected static void addObjectParam(@NonNull ByteArrayOutputStream os, @NonNull Map<String, Object> object) throws IOException
+    protected static void addObjectParam( ByteArrayOutputStream os,  Map<String, Object> object) throws IOException
     {
         // Param type
         os.write(ParamType.OBJECT.value);
@@ -433,8 +426,7 @@ public final class Amf0Functions
      * @param object object to putc
      * @throws IOException on error
      */
-    @VisibleForTesting
-    protected static void addMapParam(@NonNull ByteArrayOutputStream os, @NonNull Map<String, Object> object) throws IOException
+    protected static void addMapParam( ByteArrayOutputStream os,  Map<String, Object> object) throws IOException
     {
         // Param type
         os.write(ParamType.MAP.value);
@@ -460,7 +452,7 @@ public final class Amf0Functions
      * @param object the map to serialize
      * @throws IOException
      */
-    private static void serializeValues(@NonNull ByteArrayOutputStream os, @NonNull Map<String, Object> object) throws IOException
+    private static void serializeValues( ByteArrayOutputStream os,  Map<String, Object> object) throws IOException
     {
         for(String key: object.keySet())
         {
@@ -519,8 +511,8 @@ public final class Amf0Functions
      * @return read string &amp; its length
      * @throws IOException if the next value is not a string or on error reading it
      */
-    @NonNull
-    public static Amf0Value<String> readString(int offset, @NonNull byte[] buffer) throws IOException
+    
+    public static Amf0Value<String> readString(int offset,  byte[] buffer) throws IOException
     {
         ParamType type = ParamType.fromValue(buffer[offset]);
         if( type != ParamType.STRING )
@@ -544,8 +536,8 @@ public final class Amf0Functions
      * @return boolean value and its size
      * @throws IOException if the next value is not a boolean or on error reading it
      */
-    @NonNull
-    public static Amf0Value<Boolean> readBoolean(int offset, @NonNull byte[] buffer) throws IOException
+    
+    public static Amf0Value<Boolean> readBoolean(int offset,  byte[] buffer) throws IOException
     {
         ParamType type = ParamType.fromValue(buffer[offset]);
         if( type != ParamType.BOOLEAN )
@@ -564,8 +556,8 @@ public final class Amf0Functions
      * @return int value and its size
      * @throws IOException if the next value is not a number or on error reading it
      */
-    @NonNull
-    public static Amf0Value<Double> readNumber(int offset, @NonNull byte[] buffer) throws IOException
+    
+    public static Amf0Value<Double> readNumber(int offset,  byte[] buffer) throws IOException
     {
         ParamType type = ParamType.fromValue(buffer[offset]);
         if( type != ParamType.NUMBER )
@@ -586,7 +578,7 @@ public final class Amf0Functions
      * @return int int value and its size
      * @throws IOException if the next value is not a null or on error reading it
      */
-    public static Amf0Value<AmfNull> readNull(int offset, @NonNull byte[] buffer) throws IOException
+    public static Amf0Value<AmfNull> readNull(int offset,  byte[] buffer) throws IOException
     {
         ParamType type = ParamType.fromValue(buffer[offset]);
         if( type != ParamType.NULL )
@@ -605,8 +597,8 @@ public final class Amf0Functions
      * @return object value and its data
      * @throws IOException if the next value is not an object or on error reading it
      */
-    @NonNull
-    public static Amf0Value<Map<String, Object>> readObject(int offset, @NonNull byte[] buffer) throws IOException
+    
+    public static Amf0Value<Map<String, Object>> readObject(int offset,  byte[] buffer) throws IOException
     {
         ParamType type = ParamType.fromValue(buffer[offset]);
         if( type != ParamType.OBJECT )
@@ -616,7 +608,7 @@ public final class Amf0Functions
 
         int length = 1;
 
-        Map<String, Object> values = new ArrayMap<>();
+        Map<String, Object> values = new HashMap<>();
 
         while( true )
         {
@@ -704,8 +696,8 @@ public final class Amf0Functions
      * @return map value and its data
      * @throws IOException if the next value is not a map or on error reading it
      */
-    @NonNull
-    public static Amf0Value<Map<String, Object>> readMap(int offset, @NonNull byte[] buffer) throws IOException
+    
+    public static Amf0Value<Map<String, Object>> readMap(int offset,  byte[] buffer) throws IOException
     {
         ParamType type = ParamType.fromValue(buffer[offset]);
         if( type != ParamType.MAP )
@@ -717,7 +709,7 @@ public final class Amf0Functions
 
         offset+= 4; // 4 cause a map is always starting with 4x 0x00
 
-        Map<String, Object> values = new ArrayMap<>();
+        Map<String, Object> values = new HashMap<>();
 
         while( true )
         {
@@ -804,7 +796,7 @@ public final class Amf0Functions
      * @param buffer data
      * @return true if the next bytes are end of object, false otherwise
      */
-    private static boolean isEndOfObject(int offset, @NonNull byte[] buffer)
+    private static boolean isEndOfObject(int offset,  byte[] buffer)
     {
         int value = buffer[offset];
 
@@ -865,7 +857,7 @@ public final class Amf0Functions
             this.value = value;
         }
 
-        @Nullable
+        
         public static ParamType fromValue(int value)
         {
             for(ParamType type : values())

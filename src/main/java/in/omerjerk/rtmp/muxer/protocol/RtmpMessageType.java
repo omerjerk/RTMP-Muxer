@@ -1,5 +1,7 @@
 package in.omerjerk.rtmp.muxer.protocol;
 
+import in.omerjerk.rtmp.muxer.util.Log;
+
 /**
  * Type of RTMP messages
  *
@@ -55,7 +57,7 @@ public enum RtmpMessageType
 
 // ------------------------------------------------>
 
-    @NonNull
+    
     private static final String TAG = "RtmpMessageType";
 
     /**
@@ -64,7 +66,7 @@ public enum RtmpMessageType
      * @param value the value
      * @return the enum object, or null
      */
-    @Nullable
+    
     public static RtmpMessageType fromValue(int value)
     {
         for(RtmpMessageType type : values())
@@ -75,7 +77,7 @@ public enum RtmpMessageType
             }
         }
 
-        Log.w(TAG, "Unable to find MessageType for value: " + value);
+        Log.d(TAG, "Unable to find MessageType for value: " + value);
 
         return null;
     }
