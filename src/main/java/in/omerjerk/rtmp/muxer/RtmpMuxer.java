@@ -1,6 +1,5 @@
 package in.omerjerk.rtmp.muxer;
 
-import com.sun.istack.internal.Nullable;
 import in.omerjerk.rtmp.muxer.io.RtmpReader;
 import in.omerjerk.rtmp.muxer.io.RtmpWriter;
 import in.omerjerk.rtmp.muxer.io.TimeoutSocket;
@@ -136,7 +135,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     /**
      * Type of bandwidth limit set by the server (will be null if nothing has been sent before)
      */
-    @Nullable
+    
     private RtmpPeerBandwidthLimitType peerBandwidthLimitType;
     /**
      * Boolean that store if an ACK should be sent before the next data
@@ -166,12 +165,12 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
     /**
      * Buffer used to send chunks of video data without reallocating a buffer each time
      */
-    @Nullable
+    
     private ByteBuffer videoChunkBuffer;
     /**
      * Buffer used to send chunks of audio data without reallocating a buffer each time
      */
-    @Nullable
+    
     private ByteBuffer audioChunkBuffer;
     //endregion
 
@@ -396,7 +395,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         writer.send(buffer.array());
     }
 
-    private void connect(String app, @Nullable String serverUrl, @Nullable String pageUrl) throws IOException
+    private void connect(String app,  String serverUrl,  String pageUrl) throws IOException
     {
         byte[] connectFunction = Amf0Functions.connect(app, serverUrl, pageUrl);
 
@@ -856,7 +855,7 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
      *                               {@link #isStarted()} if you're not sure.
      */
     
-    public void start(RtmpConnectionListener listener, String app, @Nullable String serverUrl, @Nullable String pageUrl) throws IllegalStateException
+    public void start(RtmpConnectionListener listener, String app,  String serverUrl,  String pageUrl) throws IllegalStateException
     {
 //        ensureWorkerThread();
 
