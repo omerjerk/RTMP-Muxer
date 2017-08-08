@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RTMP-Muxer.iml" filepath="$PROJECT_DIR$/RTMP-Muxer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rtmp-muxer.iml" filepath="$PROJECT_DIR$/.idea/modules/rtmp-muxer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rtmp-muxer_main.iml" filepath="$PROJECT_DIR$/.idea/modules/rtmp-muxer_main.iml" group="rtmp-muxer" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/rtmp-muxer_test.iml" filepath="$PROJECT_DIR$/.idea/modules/rtmp-muxer_test.iml" group="rtmp-muxer" />
     </modules>
   </component>
 </project>
