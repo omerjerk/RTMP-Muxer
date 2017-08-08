@@ -2,3 +2,7 @@
 .gradle/
 build/
 target/
+gradle/*
+gradlew
+classes/*
+
