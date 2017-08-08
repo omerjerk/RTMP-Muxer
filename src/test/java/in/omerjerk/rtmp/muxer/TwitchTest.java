@@ -20,7 +20,7 @@ public class TwitchTest {
     private static final String FRAMES_FILE = "frames.h264";
     private static final String META_DATA_FILE = "meta.txt";
 
-    //Test for the consistency of test data
+    //Test for the consistency of h264 test data
     @Before
     public void begin() throws IOException {
         byte[] frames = Util.getResourceAsBytes(FRAMES_FILE);
@@ -37,7 +37,29 @@ public class TwitchTest {
     }
 
     @Test
-    public void basicTest() {
-        assertEquals(3, 1 + 2);
+    public void twitchStreamTest() {
+        RtmpMuxer muxer = new RtmpMuxer("live-sin.twitch.tv", 1935, new Time() {
+            @Override
+            public long getCurrentTimestamp() {
+                return System.currentTimeMillis();
+            }
+        });
+
+        muxer.start(new RtmpConnectionListener() {
+            @Override
+            public void onConnected() {
+
+            }
+
+            @Override
+            public void onReadyToPublish() {
+
+            }
+
+            @Override
+            public void onConnectionError(IOException e) {
+
+            }
+        }, "app", null, null);
     }
 }
