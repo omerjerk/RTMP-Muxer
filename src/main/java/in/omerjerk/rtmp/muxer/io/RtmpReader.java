@@ -117,11 +117,14 @@ public final class RtmpReader implements Runnable
     @Override
     public void run()
     {
+        Log.d(TAG, "RUN");
         try
         {
             in.mark(12); // put a mark of the header's length to be able to rollback
 
+            Log.d(TAG, "Before read");
             int basicHeader = in.read(); // blocking
+            Log.d(TAG, "read done");
 
             if( basicHeader == -1 ) // Error
             {

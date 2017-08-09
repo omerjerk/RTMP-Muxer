@@ -5,10 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -37,29 +36,46 @@ public class TwitchTest {
     }
 
     @Test
-    public void twitchStreamTest() {
-        RtmpMuxer muxer = new RtmpMuxer("live-sin.twitch.tv", 1935, new Time() {
+    public void twitchStreamTest() throws InterruptedException {
+        //used for synchronising the test
+        final CountDownLatch lock = new CountDownLatch(1);
+
+        final RtmpMuxer muxer = new RtmpMuxer("live-syd.twitch.tv", 1935, new Time() {
             @Override
             public long getCurrentTimestamp() {
                 return System.currentTimeMillis();
             }
         });
 
-        muxer.start(new RtmpConnectionListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onConnected() {
+            public void run() {
+                muxer.start(new RtmpConnectionListener() {
+                    @Override
+                    public void onConnected() {
+                        Util.d("onConnected()");
+                        try {
+                            muxer.createStream("live_42658716_xYX27AvDAlboF059hbPPhSIkwGcjcU");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+                    @Override
+                    public void onReadyToPublish() {
+                        Util.d("onReadyToPublish()");
+                        lock.countDown();
+                    }
+
+                    @Override
+                    public void onConnectionError(IOException e) {
+                        e.printStackTrace();
+                        Util.d("onConnectionError()");
+                    }
+                }, "app", null, null);
             }
+        }).start();
 
-            @Override
-            public void onReadyToPublish() {
-
-            }
-
-            @Override
-            public void onConnectionError(IOException e) {
-
-            }
-        }, "app", null, null);
+        lock.await(15000, TimeUnit.MILLISECONDS);
     }
 }

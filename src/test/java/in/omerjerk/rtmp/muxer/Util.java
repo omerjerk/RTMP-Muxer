@@ -48,4 +48,12 @@ public class Util {
 
         return result;
     }
+
+    public static void d(String log) {
+        System.out.println(log);
+    }
+
+    public static void e(String err) {
+        System.err.println(err);
+    }
 }

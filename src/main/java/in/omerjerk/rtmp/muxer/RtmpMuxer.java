@@ -871,7 +871,9 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         try
         {
             socket = new TimeoutSocket();
+            Log.d(TAG, "before connect");
             socket.connect(new InetSocketAddress(host, port), connectTimeout);
+            Log.d(TAG, "after connect");
             socket.setSoLinger(false, 0);
 
             writer = new RtmpWriter(socket, writeTimeout, ackWaitTimeout);
@@ -884,9 +886,11 @@ public final class RtmpMuxer implements RtmpReader.RtmpReaderListener
         }
         catch (IOException e)
         {
+            Log.e("RtmpMuxer", e.getMessage());
             listener.onConnectionError(e);
             doStop();
         }
+        Log.d(TAG, "finishes");
     }
 
     /**
